@@ -1,0 +1,33 @@
+{% if data %}
+
+{% for w in data %}
+    <p class="h3">数据来源：{{ w.website }}</p>
+    <hr>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>开场时间</td>
+            <td>结束时间</td>
+            <td>语言</td>
+            <td>厅位</td>
+            <td>价格</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for table in w.timetable %}
+            <tr>
+            {% for i in table %}
+            <td>{{ i }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <hr>
+{% endfor %}
+
+{% else %}
+
+<p class="h3">查询出错或当日无排片</p>
+
+{% endif %}

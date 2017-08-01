@@ -1,0 +1,183 @@
+{% extends 'movie/base.html' %}
+{% block head %}
+
+<meta name="keywords" content="crossin, crossin的编程教室, 首页, 电影票查询, 电影"/>
+<meta name="description" content="查询不同网站（美团/淘票票/糯米/时光） 同一部电影的电影票价格"/>
+
+{% endblock %}
+
+{% block body %}
+{% load static %}
+{#导航条#}
+    <nav class="navbar navbar-default lab-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#ul_tags" >
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="http://crossincode.com/" class="navbar-brand lab-text" target="_blank">Crossin的编程教室</a>
+
+            </div>
+            <div class="collapse navbar-collapse" id="ul_tags">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">实验室</a></li>
+                    <li><a href="/movie">电影首页</a></li>
+                    <li class="dropdown">
+                        <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button">码上行动 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://crossincode.com/school/course/1/">Python入门教程</a></li>
+                            <li><a href="http://crossincode.com/school/course/2/">Python爬虫实战</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="http://bbs.crossincode.com/forum.php" target="_blank">交流论坛</a></li>
+                    <li><a href="https://zhuanlan.zhihu.com/crossin" target="_blank">知乎专栏</a></li>
+{#                    <li><a href="#">在线教室</a></li>#}
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-xs-12">
+{#                影片展示#}
+                <div class="movie-display">
+                    <div class="movie-display-content">
+                        <img src="{{ item.poster_url_big }}" alt="{{ item.name }}" class="movie-display-img">
+                        <div class="movie-display-ins">
+                            <p class="h2">电影名：{{ item.name }}</p>
+                            <p>导演：{{ item.directors }}</p>
+                            <p>演员：{{ item.casts }}</p>
+                            <p>评分：{{ item.rating }}</p>
+                            <p>类型：{{ item.genes }}</p>
+                        </div>
+                    </div>
+                </div>
+{#                影院选择#}
+                <div class="movie-choose">
+{#                    热门地区#}
+                    <div class="movie-choose-hotarea">
+                        <ul class="nav nav-pills" id="hotarea">
+                            <li class="disabled"><a href="" >热门：</a></li>
+{#                            <li><a href="">上海</a></li>#}
+                        </ul>
+                    </div>
+{#                    面包屑层级导航#}
+                    <div class="movie-choose-bread">
+{#                        <p>当前路径：</p>#}
+                        <ol class="breadcrumb movie-choose-bread" id="bread">
+                            <li class="disabled">当前路径： </li>
+                          <li id="choose-city"><a href="javascript:void(0);">选择城市</a><span class="caret"></span></li>
+                          <li id="choose-dis"><a href="javascript:void(0);">选择区域</a><span class="caret"></span></li>
+                          <li id="choose-cine"><a href="javascript:void(0);" class="cine_">...</a><span class="caret"></span></li>
+                        </ol>
+                    </div>
+{#                    选择日期#}
+                    <div class="movie-choose-hotarea">
+                        <ul class="nav nav-pills" id="choose-date">
+                            <li class="disabled"><a href="javascript:void(0);">选择日期：</a></li>
+
+                        </ul>
+                    </div>
+                    <hr>
+
+{#                    展示各级选择器#}
+
+                    <div id="movie-choose-cinema"></div>
+                    <div id="movie-choose-x"></div>
+                    </div>
+                </div>
+{#                结果展示#}
+                <div></div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+{#    <footer class="movie-ft"><p>苏ICP备15063769号</p></footer>#}
+    <script>
+// {#    选择区/县，发送到后台，提取出电影院#}
+$(document).ready(function () {
+    $(document).on('click', '.dis_', function(){
+        var dis = this.text;
+        var city = $('#choose-city a').text();
+// {#            console.log(city)#}
+        $('#choose-dis a').text(dis);
+
+        $.post('/movie/cinema', {
+            'city':city,
+            'district': dis,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },function (data) {
+// {#                console.log(data)#}
+//             $('#cache').text(data);
+            g_data[dis] = data;
+{#            console.log(g_data);#}
+            $('#movie-choose-x').html(data);
+// {#                console.log($('#cache').text())#}
+
+        })
+    })
+});
+// {#    选择电影院，显示票价#}
+$(document).on('click', '.cinema', function () {
+    var id = $(this).attr('id');
+    cur_cinema_id = id;
+    var cinema_name = this.text;
+// {#        console.log(cinema_name);#}
+    var film = $('.movie-display-img').attr('alt');
+    var cur_date = $('.date_.active').attr('id');
+    $('#movie-choose-x').html('<h2>正在加载数据</h2>');
+    $.post('/movie/tickets', {
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        'pk': id,
+        'film': film,
+        'date': cur_date
+    }, function (data) {
+
+        $('#movie-choose-x').html(data);
+        $('.cine_').text(cinema_name)
+
+
+    })
+});
+
+// {#    选择日期#}
+$(document).on('click', '.date_', function () {
+    $('.date_.active').removeClass('active');
+    var that = this;
+    var date = $(this).attr('id');
+    var film = $('.movie-display-img').attr('alt');
+    // console.log(date)
+    if (cur_cinema_id != null){
+        $('#movie-choose-x').html('<h2>正在加载数据</h2>');
+        $.post('/movie/tickets',{
+            'pk': cur_cinema_id,
+            'film' : film,
+            'date' : date,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        }, function (data) {
+{#            console.log(data);#}
+            $('#movie-choose-x').html(data);
+            $(that).addClass('active');
+
+        })
+    } else {
+        $('#movie-choose-x').html('<h2>请先选择影院</h2>');
+    }
+
+
+});
+    </script>
+
+
+
+
+    <script type="application/javascript" src="{% static 'movie/js/city_alpha.js' %}"></script>
+    <script src="{% static 'movie/js/districts.js' %}" type="application/javascript"></script>
+    <script type="application/javascript" src="{% static 'movie/js/formatstr.js' %}"></script>
+    <script type="application/javascript" src="{% static 'movie/js/movie.js' %}"></script>
+{% endblock %}

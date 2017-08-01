@@ -1,0 +1,25 @@
+
+
+    <ul class="nav nav-pills">
+        {% for cine in cinemas %}
+        <li><a href="javascript:void(0);" id="{{ cine.id }}" class="cinema">{{ cine.cinema_name }}
+            {% if cine.taopp_url and cine.nuomi_url and cine.time_url %}
+                <span class="badge">ALL</span>
+            {% elif cine.taopp_url and cine.nuomi_url %}
+                <span class="badge">淘|糯</span>
+            {% elif cine.taopp_url and cine.time_url  %}
+                <span class="badge">淘|时</span>
+            {% elif cine.nuomi_url and cine.time_url  %}
+                <span class="badge">糯|时</span>
+            {% elif cine.nuomi_url %}
+                <span class="badge">糯</span>
+            {% elif cine.time_url %}
+                <span class="badge">时</span>
+            {% elif cine.taopp_url %}
+                <span class="badge">淘</span>
+            {% endif %}
+        </a></li>
+        {% endfor %}
+
+    </ul>
+<hr>

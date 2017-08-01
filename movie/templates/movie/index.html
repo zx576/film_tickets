@@ -1,0 +1,52 @@
+{% extends 'movie/base.html' %}
+{% block head %}
+
+<meta name="keywords" content="crossin, crossin的编程教室, 首页, 电影票查询, 电影"/>
+<meta name="description" content="查询不同网站（美团/淘票票/糯米/时光） 同一部电影的电影票价格"/>
+
+{% endblock %}
+
+{% block body %}
+<div class="movie-base" style=" background-image: url('{{ cover.cover_img.url }}') ">
+    <div class="movie-side-block">
+        <div class="movie-side-block-up">
+            <div class="movie-side-block-up-left"></div>
+            <div class="movie-side-block-up-right">
+                <p class="h1 movie-side-up-title">本周推荐电影</p>
+                <p class="h3 movie-side-up-title">{{ top.name }}</p>
+            </div>
+        </div>
+        <div class="movie-side-block-down">
+            <div class="movie-side-block-down-left"></div>
+            <div class="movie-side-block-down-right">
+                <a href="{{ top.id }}">
+                    <img class="movie-side-down-img" src="{{ top.poster_url_big }}">
+                </a>
+                <div class="movie-side-down-ins">
+                    <p>导演: {{ top.directors }}</p>
+                    <p>主演: {{ top.casts }}</p>
+                    <P>豆瓣评分: {{ top.rating }}</P>
+                    <p>类型: {{ top.genes }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="movie-bottom">
+        <div class="movie-bottom-center center-block">
+            <ul class="list-inline text-center">
+
+            {% for m in movies %}
+            <li><a href="{{ m.id }}" class="movie-bottom-li">
+                <img class="movie-li-img" src="{{ m.poster_url_me }}" alt="{{ m.name }}">
+                <div class="movie-li-title"><p class="movie-li-title-p">{{ m.name }}</p></div>
+            </a></li>
+            {% endfor %}
+
+        </ul>
+        </div>
+    </div>
+</div>
+
+    <footer></footer>
+{% endblock %}

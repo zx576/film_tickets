@@ -1,0 +1,280 @@
+{% extends 'movie/base.html' %}
+{% block head %}
+
+<meta name="keywords" content="crossin, crossin的编程教室, 首页, 电影票查询, 电影"/>
+<meta name="description" content="查询不同网站（美团/淘票票/糯米/时光） 同一部电影的电影票价格"/>
+
+{% endblock %}
+
+{% block body %}
+{#导航条#}
+    <nav class="navbar navbar-default lab-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#ul_tags" >
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="http://crossincode.com/" class="navbar-brand lab-text" target="_blank">Crossin的编程教室</a>
+
+            </div>
+            <div class="collapse navbar-collapse" id="ul_tags">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">实验室</a></li>
+                    <li><a href="/movie">电影首页</a></li>
+                    <li class="dropdown">
+                        <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button">码上行动 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://crossincode.com/school/course/1/">Python入门教程</a></li>
+                            <li><a href="http://crossincode.com/school/course/2/">Python爬虫实战</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="http://bbs.crossincode.com/forum.php" target="_blank">交流论坛</a></li>
+                    <li><a href="https://zhuanlan.zhihu.com/crossin" target="_blank">知乎专栏</a></li>
+{#                    <li><a href="#">在线教室</a></li>#}
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-xs-12">
+{#                影片展示#}
+                <div class="movie-display">
+                    <div class="movie-display-content">
+                        <img src="{{ item.poster_url_big }}" alt="{{ item.name }}" class="movie-display-img">
+                        <div class="movie-display-ins">
+                            <p class="h2">电影名：{{ item.name }}</p>
+                            <p>导演：{{ item.directors }}</p>
+                            <p>演员：{{ item.casts }}</p>
+                            <p>评分：{{ item.rating }}</p>
+                            <p>类型：{{ item.genes }}</p>
+                        </div>
+                    </div>
+                </div>
+{#                影院选择#}
+                <div class="movie-choose">
+{#                    热门地区#}
+                    <div class="movie-choose-hotarea">
+                        <ul class="nav nav-pills" id="hotarea">
+                            <li class="disabled"><a href="" >热门：</a></li>
+{#                            <li><a href="">上海</a></li>#}
+                        </ul>
+                    </div>
+{#                    面包屑层级导航#}
+                    <div class="movie-choose-bread">
+{#                        <p>当前路径：</p>#}
+                        <ol class="breadcrumb movie-choose-bread" id="bread">
+                            <li class="disabled">当前路径： </li>
+                          <li id="choose-city"><a href="javascript:void(0);">选择城市</a><span class="caret"></span></li>
+                          <li id="choose-dis"><a href="javascript:void(0);">选择区域</a><span class="caret"></span></li>
+                          <li id="choose-cine"><a href="javascript:void(0);" class="cine_">...</a><span class="caret"></span></li>
+                        </ol>
+                    </div>
+{#                    选择日期#}
+                    <div class="movie-choose-hotarea">
+                        <ul class="nav nav-pills" id="choose-date">
+                            <li class="disabled"><a href="javascript:void(0);">选择日期：</a></li>
+
+                        </ul>
+                    </div>
+                    <hr>
+
+{#                    展示各级选择器#}
+
+                    <div id="movie-choose-cinema"></div>
+                    <div id="movie-choose-x"></div>
+                    </div>
+                </div>
+{#                结果展示#}
+                <div></div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+    <script>
+{#    添加热门城市#}
+        $(document).ready(function () {
+            var city_alpha = city;
+            var hot_city = city['HOT'];
+{#            alert(hot_city)#}
+            for (c of hot_city){
+                var cty = '<li><a href="javascript:void(0);" class="city_">'+ c + '</a></li>';
+{#                var cty = '<li><a href="" class="city_">'+ c + '</a></li>';#}
+                $('#hotarea').append(cty);
+            }
+        })
+    </script>
+    <script>
+{#    点击选择城市， 显示下拉框#}
+        $(document).ready(function () {
+            $(document).on('click', '#choose-city', function () {
+                var allcity = city;
+                var str_html = '';
+                var alpha = generateBig_1();
+                for (i of alpha){
+                    var str_div = '<div class="movie-choose-city">\
+                            <p class="h4">{0}</p>\
+                            <hr>\
+                            <ul class="nav nav-pills" id="hotarea">'.format(i);
+                    var cities = city[i];
+                    for (c in cities){
+                        var li = '<li><a href="javascript:void(0);" class="city_">{0}</a></li>'.format(cities[c]);
+                        str_div = str_div + li
+                    }
+
+                    str_div = str_div + '</ul></div>';
+                    str_html = str_html + str_div
+                }
+{#                alert('sss')#}
+                $('#movie-choose-x').html(str_html)
+
+            })
+
+        })
+    </script>
+
+    <script>
+{#    显示下拉框，点击选择新城市，更新路径导航#}
+        $(document).ready(function(){
+            $(document).on('click','.city_',function() {
+{#            $('.city_').click(function () {#}
+
+                var that = this;
+                var cty = that.text;
+                var districts = dct[cty];
+{#                console.log(districts);#}
+                var dis_1 = districts[0];
+                var new_bread = ' <li class="disabled">当前路径： </li>\
+                          <li id="choose-city"><a href="javascript:void(0);">{0}</a><span class="caret"></span></li>\
+                          <li id="choose-dis"><a href="javascript:void(0);">{1}</a><span class="caret"></span></li>\
+                          <li id="choose-cine"><a href="javascript:void(0);" class="cine_">...</a><span class="caret"></span></li>'.format(cty, dis_1);
+                $('#bread').html(new_bread);
+                var str_ul = '<ul class="nav nav-pills" id="hotarea">';
+                for (i in districts){
+                    var li = '<li><a href="javascript:void(0);" class="dis_">{0}</a></li>'.format(districts[i]);
+                    str_ul = str_ul + li
+                }
+                str_url = str_ul + '</ul>';
+                $('#movie-choose-x').html(str_ul)
+
+            })
+        })
+    </script>
+    <script>
+{#    选择区/县，发送到后台，提取出电影院#}
+    $(document).ready(function () {
+        $(document).on('click', '.dis_', function(){
+            var dis = this.text;
+            var city = $('#choose-city a').text();
+{#            console.log(city)#}
+            $('#choose-dis a').text(dis);
+
+            $.post('/movie/cinema', {
+                'city':city,
+                'district': dis,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },function (data) {
+{#                console.log(data)#}
+                $('#cache').text(data);
+                $('#movie-choose-x').html(data);
+{#                console.log($('#cache').text())#}
+
+            })
+        })
+    })
+    </script>
+    <script id="cache"></script>
+    <script>
+{#    点击面包屑上的 区县 下拉出其他区县#}
+        $(document).on('click', '#choose-dis', function () {
+            var cty = $('#choose-city a').text();
+{#            console.log(cty)#}
+            var districts = dct[cty];
+                var str_ul = '<ul class="nav nav-pills" id="hotarea">';
+                for (i in districts){
+                    var li = '<li><a href="javascript:void(0);" class="dis_">{0}</a></li>'.format(districts[i]);
+                    str_ul = str_ul + li
+                }
+                str_url = str_ul + '</ul>';
+                $('#movie-choose-x').html(str_ul)
+
+        })
+    </script>
+    <script>
+{#    选择电影院，显示票价#}
+    $(document).on('click', '.cinema', function () {
+        var id = $(this).attr('id');
+        var cinema_name = this.text;
+{#        console.log(cinema_name);#}
+        var film = $('.movie-display-img').attr('alt');
+        $.post('/movie/tickets', {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            'pk': id,
+            'film': film
+        }, function (data) {
+
+            $('#movie-choose-x').html(data);
+            $('.cine_').text(cinema_name)
+
+
+        })
+    })
+    </script>
+    <script>
+{#       获取当前时间 #}
+    $(document).ready(function () {
+        var dt = new Date();
+        var year = dt.getFullYear();
+        var month = dt.getMonth() + 1;
+        var day = dt.getDate();
+        var today = year + '-' + month + '-' + day;
+        var next_day = day + 1;
+        var tomorrow = year + '-' + month + '-' + next_day;
+        var third = next_day + 1;
+        var third_day = year + '-' + month + '-' + third;
+        $('#choose-date').append(
+            '<li class="active date_" id="{0}"><a href="javascript:void(0);">今天 {0}</a></li>\
+                            <li id="{1}" class="date_"><a href="javascript:void(0);">明天 {1}</a></li>\
+                            <li id="{2}" class="date_"><a href="javascript:void(0);">后天 {2}</a></li>'.format(today, tomorrow, third_day)
+        )
+    })
+    </script>
+    <script>
+        $(document).on('click', '.date_', function () {
+            $('.date_.active').removeClass('active');
+            $(this).addClass('active')
+        })
+    </script>
+    <script>
+{#    生成26个大写字母#}
+    function generateBig_1(){
+    var str = [];
+    for(var i=65;i<91;i++){
+        str.push(String.fromCharCode(i));
+    }
+    return str;
+}
+    </script>
+
+    <script>
+{#    下拉电影院列表#}
+    $(document).on('click', '#choose-cine', function () {
+        var dis =  $('#cache').text();
+{#        console.log(dis);#}
+        $('#movie-choose-x').html(dis);
+    });
+{#    选择日期#}
+
+    </script>
+
+    {% load static %}
+    <script type="application/javascript" src="{% static 'movie/js/city_alpha.js' %}"></script>
+    <script src="{% static 'movie/js/districts.js' %}" type="application/javascript"></script>
+    <script type="application/javascript" src="{% static 'movie/js/formatstr.js' %}"></script>
+{% endblock %}

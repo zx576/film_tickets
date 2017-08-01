@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    {% block head %}{% endblock %}
+
+    <title>crossin的编程教室-实验室-电影票查询</title>
+    <link rel="icon" href="{% static 'movie/img/favicon.ico' %} ">
+{#    调试用#}
+{#    <link rel="stylesheet" href="{% static 'movie/css/bootstrap.css' %}">#}
+    <link rel="stylesheet" href="{% static 'movie/css/movie.css' %}">
+{#    <script type="application/javascript" src="{% static 'movie/js/jquery-3.2.1.js' %}"></script>#}
+{#    <script type="application/javascript" src="{% static 'movie/js/bootstrap.js' %}"></script>#}
+{#    正式用#}
+
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+{% block body %}{% endblock %}
+
+
+</body>
+</html>
