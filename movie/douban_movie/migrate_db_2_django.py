@@ -5,8 +5,10 @@
 # 将之前在 movie_ticket 项目中产生的数据迁移到 django 数据库中
 
 import os, django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lab.server_settings")
-django.setup()
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(BASE_DIR)
 
 import Levenshtein
 

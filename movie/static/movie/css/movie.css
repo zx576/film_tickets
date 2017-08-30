@@ -158,7 +158,6 @@ body, html {
 .movie-choose-hotarea{
     height: 40px;
     border-bottom: #ffffff;
-
 }
 .movie-choose-bread{
     background-color: #fff;
@@ -176,8 +175,23 @@ body, html {
     justify-content: flex-start;
 }
 
-.movie-ft{
-    bottom: 0;
-    position: absolute;
-    /*margin 0 auto;*/
+.lab-footer{
+    margin: 20px auto 0;
+    position: relative;
+}
+
+.lab-footer h4{
+    color: black;
+}
+.lab-footer p{
+    color: black;
+}
+.lab-footer-row{
+    padding: 20px 20px;
+    /*background-color: #2c3e50;*/
+    color: #fff;
+    min-height: 200px;
+}
+.lab-ft-img{
+    max-width: 200px;
 }

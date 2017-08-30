@@ -3,7 +3,6 @@
 
 <meta name="keywords" content="crossin, crossin的编程教室, 首页, 电影票查询, 电影"/>
 <meta name="description" content="查询不同网站（美团/淘票票/糯米/时光） 同一部电影的电影票价格"/>
-
 {% endblock %}
 
 {% block body %}
@@ -87,8 +86,29 @@
 
 {#                    展示各级选择器#}
 
-                    <div id="movie-choose-cinema"></div>
-                    <div id="movie-choose-x"></div>
+                    <div id="movie-choose-cinema"><br></div>
+                    <div id="movie-choose-x"><br></div>
+
+
+                        {#      页脚#}
+                    <hr>
+    <div class="lab-footer">
+        <div class="container-fluid">
+            <div class="row lab-footer-row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <h4>Crossin的编程教室</h4>
+                <p>编程世界的新手村。扫描右侧二维码，关注公众号，获取更多学习资源</p>
+                <p>苏ICP备15063769号</p>
+
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <img src="{% static 'movie/img/wxqr.jpg' %}" alt="Crossin的编程教室二维码" class="lab-ft-img pull-right">
+            </div>
+
+        </div>
+        </div>
+    </div>
+
                     </div>
                 </div>
 {#                结果展示#}
@@ -97,7 +117,11 @@
             <div class="col-md-2"></div>
         </div>
 
-{#    <footer class="movie-ft"><p>苏ICP备15063769号</p></footer>#}
+
+
+{#    #}
+
+
     <script>
 // {#    选择区/县，发送到后台，提取出电影院#}
 $(document).ready(function () {

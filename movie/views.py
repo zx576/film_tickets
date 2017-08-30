@@ -1,6 +1,7 @@
 import datetime
 
 from django.shortcuts import render, render_to_response
+from django.http import Http404
 # Create your views here.
 
 from .models import Cover, CinemaUrl, Movie
@@ -30,7 +31,7 @@ def index(request):
 def movie(request, movie_id):
 
     m = Movie.objects.get(pk=movie_id)
-    # 查询 IP 返回地址
+    # 查询 ID 返回地址
     content = {
         'item': m
     }
@@ -44,8 +45,9 @@ def cinema(request):
     if request.is_ajax():
 
         city = request.POST.get('city', None)
-        district = request.POST.get('district')
-
+        district = request.POST.get('district', None)
+        if not city and not district:
+            return Http404('not enough parameters')
         query = CinemaUrl.objects.filter(city__contains=city).filter(district__startswith=district)
         # print(query)
         # for i in query:
@@ -65,6 +67,8 @@ def tickets(reqeust):
     if reqeust.is_ajax():
         # print(reqeust.POST)
         str_date = reqeust.POST.get('date')
+        if not str_date:
+            return Http404('need parameter "date"')
         # 给时光网的时间参数
         date_ = datetime.datetime.strptime(str_date, "%Y-%m-%d").date()
         # 给糯米的时间参数
@@ -74,6 +78,9 @@ def tickets(reqeust):
         time_date = ''.join(str_date.split('-'))
         pk = reqeust.POST.get('pk')
         film = reqeust.POST.get('film')
+
+        if not pk and not film:
+            return Http404('lack of parameters "pk" or "film" or both')
         res_data = []
         cine = CinemaUrl.objects.get(pk=pk)
 

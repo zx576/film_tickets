@@ -18,7 +18,7 @@
 
 #### 如何使用
 
-`git clone ''`
+`git clone https://github.com/zx576/film_tickets`
 
 进入项目文件夹
 
@@ -67,7 +67,7 @@ spiders/
   
 utils/
     
-    decorators.py 一个装饰器辅助开发文件，仅包含了一个 make_print 调试用装饰器
+    decorators.py 一个装饰器辅助开发文件
     headers.py  包含了收集的 headers 
     proxy.py    获取代理
     rep.py      使用代理重新对 requests 请求做了一层包装
@@ -107,7 +107,7 @@ js 代码
 
 // 选择区/县，发送到后台，提取出电影院
 $(document).ready(function () {
-    $(document).on('click', '.dis_', function(){
+    $(document).on('click', '.city_', function(){
         // 获取发送到后端的信息
         // 城市名 区名
         var dis = this.text;
@@ -178,7 +178,7 @@ template/cinema.html
 ```python
 
 import os, django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lab.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "film_tickets.settings")
 django.setup()
 
 # 这样可以正常的导入 .models 中的类的
@@ -188,7 +188,6 @@ from movie.models import Movie
 ```
 
 3、python-Levenshtein
-
 
 
 在初期的电影院信息的爬取过程中，各家的信息分别在数据库中不同的表内，接入到 django 后，产生了合并 表 的需求，但各家网站可能对于同一电影院显示的名称有细微差别。
